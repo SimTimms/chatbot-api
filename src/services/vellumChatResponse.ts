@@ -23,11 +23,11 @@ async function vellum(question: string) {
     releaseTag,
     inputs,
   };
+
   // execute the workflow
   const result = await vellumClientInstance.executeWorkflow(request);
 
   if (result.data.state === "REJECTED") {
-    console.log("Workflow execution failed:", result.data.error);
     throw new Error(result.data.error!.message);
   }
 

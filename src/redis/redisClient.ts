@@ -1,17 +1,18 @@
 import { createClient } from "redis";
-
+import { connectionURLValidator, passwordValidator } from "./validators";
 let redisClientInstance: ReturnType<typeof createClient> | null = null;
 
 async function redisClient(
-  connectionURL: string
+  connectionURL: string,
+  password: string
 ): Promise<ReturnType<typeof createClient>> {
-  if (!connectionURL) {
-    throw new Error("Redis connection URL is not defined");
-  }
+  connectionURLValidator(connectionURL);
+  passwordValidator(password);
+
   if (!redisClientInstance) {
     redisClientInstance = createClient({
       username: "default",
-      password: "2el8eMzUAGV7Nq4KVoPufEgvzosC2lSX",
+      password: password,
       socket: {
         host: connectionURL,
         port: 11240,

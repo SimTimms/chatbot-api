@@ -7,11 +7,9 @@ async function vellumClient(apiKey: string): Promise<VellumClient> {
     throw new Error("API Key is not defined");
   }
   if (!vellumClientInstance) {
-    console.log("API Key", vellumClientInstance, apiKey);
     vellumClientInstance = new VellumClient({
       apiKey,
     });
-    console.log("API Key", vellumClientInstance, apiKey);
   }
 
   return vellumClientInstance; // Return the Vellum client instance

@@ -81,7 +81,6 @@ GET /health
 
 - `PORT`: Server port (default: 3000)
 - `OPENAI_API_KEY`: Your OpenAI API key
-- `VECTOR_DB_PATH`: Path to store vector database files
 
 ## Development
 
