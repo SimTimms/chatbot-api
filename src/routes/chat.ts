@@ -1,6 +1,5 @@
 import { Router, Request, Response } from "express";
-import vellum from "../services/vellum";
-import checkDocuments from "../services/checkDocuments";
+import vellumChatResponse from "../services/vellumChatResponse";
 
 const chatRouter = Router();
 
@@ -12,10 +11,9 @@ chatRouter.post("/ask", async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Question is required" });
     }
 
-    const answer = await vellum(question);
-    const checkDocumentsResult = await checkDocuments(question);
+    const answer = await vellumChatResponse(question);
 
-    console.log("checkDocumentsResult", checkDocumentsResult);
+    console.log("checkDocumentsResult", answer);
     return res.json({ answer });
   } catch (error) {
     console.error("Error in chat endpoint:", error);
