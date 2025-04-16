@@ -1,7 +1,7 @@
 import { VellumClient } from "vellum-ai";
 
 const vellumClient = new VellumClient({
-  apiKey: "RwyRNfQ9.06BXTwL17qVw6uzU9TpGEtFoBVHrwi5U",
+  apiKey: process.env.VELLUM_API_KEY,
 });
 
 async function vellum(question: string) {
