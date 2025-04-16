@@ -8,7 +8,6 @@ import chatRouter from "./routes/chat";
 import healthRouter from "./routes/health";
 
 dotenv.config();
-
 const app: Express = express();
 const port = process.env.PORT || 3000;
 

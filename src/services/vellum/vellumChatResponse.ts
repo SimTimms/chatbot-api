@@ -1,4 +1,4 @@
-import vellumClient from "../vellum/vellumClient";
+import vellumClient from "./vellumClient";
 import { Vellum } from "vellum-ai";
 
 async function vellum(question: string) {

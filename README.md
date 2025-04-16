@@ -8,7 +8,6 @@ This is a Node.js API that implements Retrieval Augmented Generation (RAG) using
 - Document management for RAG system
 - TypeScript support
 - Express.js REST API
-- Vector storage using ChromaDB
 - OpenAI integration
 
 ## Prerequisites
