@@ -3,7 +3,7 @@ const { VellumClient } = require("vellum-ai");
 
 // create your API key here: https://app.vellum.ai/api-keys#keys
 const vellumClient = new VellumClient({
-  apiKey: "RwyRNfQ9.06BXTwL17qVw6uzU9TpGEtFoBVHrwi5U",
+  apiKey: "RwyRNfQ9.",
 });
 
 async function checkDocuments(question: string) {
