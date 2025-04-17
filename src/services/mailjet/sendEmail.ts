@@ -1,7 +1,7 @@
 import Mailjet from "node-mailjet";
 import { MailjetSendEmail } from "../../types/";
 
-const sendEmail = async ({
+const sendEmail = ({
   subject,
   htmlMessage,
   message,
@@ -11,37 +11,25 @@ const sendEmail = async ({
   senderName,
   mailjetKey,
   mailjetSecret,
-}: MailjetSendEmail): Promise<void> => {
-  const mailjet = Mailjet.apiConnect(mailjetKey || "", mailjetSecret || "");
-
-  try {
-    const request = mailjet.post("send", { version: "v3.1" }).request({
-      Messages: [
-        {
-          From: {
-            Email: senderEmail,
-            Name: senderName,
+}: MailjetSendEmail): void => {
+  setImmediate(async () => {
+    try {
+      const mailjet = Mailjet.apiConnect(mailjetKey || "", mailjetSecret || "");
+      await mailjet.post("send", { version: "v3.1" }).request({
+        Messages: [
+          {
+            From: { Email: senderEmail, Name: senderName },
+            To: [{ Email: recipientEmail, Name: recipientName }],
+            Subject: subject,
+            TextPart: message,
+            HTMLPart: htmlMessage,
           },
-          To: [
-            {
-              Email: recipientEmail,
-              Name: recipientName,
-            },
-          ],
-          Subject: subject,
-          TextPart: message,
-          HTMLPart: htmlMessage,
-        },
-      ],
-    });
-
-    request.catch((err) => {
-      console.log(err.statusCode);
-    });
-  } catch (error) {
-    console.warn("Failed to send email", error);
-    return;
-  }
+        ],
+      });
+    } catch (error) {
+      console.warn("Failed to send email", error);
+    }
+  });
 };
 
 export default sendEmail;

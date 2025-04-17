@@ -1,32 +1,31 @@
 import sendEmail from "../services/mailjet/sendEmail";
 import { MailjetSendEmail } from "../types";
 import createHTMLEmail from "../utils/createHTMLEmail";
-import vellumSummariseChat from "../services/vellum/vellumSummariseChat";
-import vellumSummariseSubject from "../services/vellum/vellumSummariseSubject";
-import getChatHistory from "../services/logs/getChatHistory";
-import chatHistoryToString from "../utils/chatHistoryToString";
 
-const csEmailHandler = async (sessionId: string) => {
-  //Get Chat History
-  const chatHistory = await getChatHistory(
-    process.env.LOG_API_URL as string,
-    sessionId
-  );
-  const chatHistoryString = chatHistoryToString(chatHistory);
+export interface EmailInput {
+  aiSubject: string;
+  aiTag: string;
+  aiAction: string;
+  aiSummary: string;
+  chatHistoryString: string;
+  userEmail?: string;
+  cognitoAccountEmail?: string;
+  invoiceNumber?: string;
+}
 
-  //Get AI to summarise the chat history and subject
-  const aiSummarisedHistory = await vellumSummariseChat(chatHistoryString);
-  const aiSummary = aiSummarisedHistory[0].value as string;
-  const aiSummarySubject = await vellumSummariseSubject(aiSummary);
-  const aiSubjectJSON = JSON.parse(aiSummarySubject[0].value as string);
-  const aiSubject = aiSubjectJSON.subject;
-  const aiTag = aiSubjectJSON.tag;
-  const aiAction = aiSubjectJSON.action;
-
-  //Create an HTML version
+const csEmailHandler = async ({
+  aiSubject,
+  aiTag,
+  aiAction,
+  aiSummary,
+  chatHistoryString,
+  userEmail,
+  cognitoAccountEmail,
+  invoiceNumber,
+}: EmailInput) => {
   const chatHistoryHTML = chatHistoryString.replace(/\n/g, "<br/>");
 
-  //Create the email object
+  // Create the email object
   const csEmail: MailjetSendEmail = {
     subject: `[SUPPORT ESCALATION] - ${aiTag} - ${aiSubject} - from {User Email}`,
     htmlMessage: "",
@@ -38,19 +37,21 @@ const csEmailHandler = async (sessionId: string) => {
     mailjetKey: process.env.MAILJET_API_KEY as string,
     mailjetSecret: process.env.MAILJET_API_SECRET as string,
   };
-  csEmail.message = `${aiSummary}/n${chatHistoryString}`;
+
+  csEmail.message = `${aiSummary}\n${chatHistoryString}`;
   csEmail.htmlMessage = createHTMLEmail(
     aiSummary,
     chatHistoryHTML,
     aiTag,
     aiAction,
-    "{User Email}",
-    "{Cognito Account Email}",
-    "{Invoice Number}",
+    userEmail || "",
+    cognitoAccountEmail || "",
+    invoiceNumber || "",
     aiSubject
   );
 
-  sendEmail(csEmail);
+  // Run email sending asynchronously without blocking the execution
+  setImmediate(() => sendEmail(csEmail));
 };
 
 export default csEmailHandler;

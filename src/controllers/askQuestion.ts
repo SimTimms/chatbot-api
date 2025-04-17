@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { getCachedData } from "../redis/helpers";
-import cachedResponseHandler from "../services/cachedResponseHandler";
-import uncachedResponseHandler from "../services/uncachedResponseHandler";
+import responseHandler from "../services/responseHandler";
 import getAiAnswer from "../services/ai/getAiAnswer";
 
 interface AskQuestionRequest extends Request {
@@ -18,18 +17,31 @@ const askQuestion = async (
 ) => {
   try {
     const { question, sessionId } = req.body;
+
     //Cached Response
     const cacheKey = `question-response:${question}`;
     const cachedAnswer = await getCachedData(cacheKey);
-
+    let adjustedResponse: string | undefined = undefined;
     if (cachedAnswer) {
-      cachedResponseHandler(question, cachedAnswer, sessionId);
-      return res.json(JSON.parse(cachedAnswer));
+      adjustedResponse = await responseHandler(
+        question,
+        cachedAnswer,
+        sessionId,
+        cacheKey,
+        true
+      );
+      return res.json({ answer: adjustedResponse });
     }
 
     //Uncached Response
     const aiAnswer: string = await getAiAnswer(question);
-    uncachedResponseHandler(question, aiAnswer, sessionId, aiAnswer, cacheKey);
+    adjustedResponse = await responseHandler(
+      question,
+      aiAnswer,
+      sessionId,
+      cacheKey,
+      false
+    );
     return res.json({ answer: aiAnswer });
   } catch (error) {
     next(error);

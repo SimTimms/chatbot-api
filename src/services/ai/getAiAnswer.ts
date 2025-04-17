@@ -3,7 +3,7 @@ import vellumChatResponse from "../vellum/vellumChatResponse";
 const getAiAnswer = async (question: string): Promise<string> => {
   const aiAnswer = await vellumChatResponse(question).catch((error) => {
     console.error("Error in vellumChatResponse:", error);
-    return "Error in vellumChatResponse";
+    return "";
   });
 
   const reducedAnswer =
