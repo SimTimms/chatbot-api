@@ -6,7 +6,8 @@ const setCachedData = async (
   ttl: number
 ): Promise<void> => {
   if (!key || !value || !ttl) {
-    throw new Error("Key, value or ttl not defined");
+    console.warn(" key, value or TTL not defined.");
+    return;
   }
   const redis = await redisClient(
     process.env.REDIS_URI as string,

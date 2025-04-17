@@ -1,14 +1,12 @@
-export const validateQuestion = (question: string) => {
-  if (!question) {
-    throw new Error("Question is not defined");
-  }
-  if (question.trim().length === 0) {
-    throw new Error("Question is not defined");
-  }
-};
+import { body } from "express-validator";
 
-export const validateSessionId = (sessionId: string) => {
-  if (!sessionId) {
-    throw new Error("sessionId is not defined");
-  }
-};
+export const validateRequest = [
+  body("question")
+    .isString()
+    .isLength({ min: 1 })
+    .withMessage("question is required"),
+  body("sessionId")
+    .isString()
+    .isLength({ min: 1 })
+    .withMessage("session is required"),
+];

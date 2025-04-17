@@ -1,19 +1,18 @@
 import vellumClient from "./vellumClient";
 import { Vellum } from "vellum-ai";
 
-async function vellumChatResponse(question: string): Promise<any[]> {
+async function vellumSummariseSubject(conversationSummary: string) {
   const vellumClientInstance = await vellumClient(
     process.env.VELLUM_API_KEY as string
   );
 
-  // configurable parameters
-  const workflowDeploymentName = "chatbot-workflow";
+  const workflowDeploymentName = "chat-bot-email-subject";
   const releaseTag = "LATEST";
   const inputs: Vellum.WorkflowRequestInputRequest[] = [
     {
       type: "STRING",
-      name: "question",
-      value: question,
+      name: "subject",
+      value: conversationSummary,
     },
   ];
 
@@ -35,4 +34,4 @@ async function vellumChatResponse(question: string): Promise<any[]> {
   return result.data.outputs;
 }
 
-export default vellumChatResponse;
+export default vellumSummariseSubject;

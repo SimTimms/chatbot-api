@@ -2,7 +2,8 @@ import redisClient from "../redisClient";
 
 const invalidateCache = async (key: string): Promise<void> => {
   if (!key) {
-    throw new Error("Key is not defined");
+    console.warn("Cache key is not defined.");
+    return;
   }
   const redis = await redisClient(
     process.env.REDIS_URI as string,
