@@ -1,10 +1,10 @@
-import createLogService from "./logs/createLogService";
-import { LOG_TYPES } from "../types/enums";
-import csEmailHandler, { EmailInput } from "../utils/csEmailHandler";
-import vellumSummariseChat from "../services/vellum/vellumSummariseChat";
-import vellumSummariseSubject from "../services/vellum/vellumSummariseSubject";
-import getChatHistory from "../services/logs/getChatHistory";
-import chatHistoryToString from "../utils/chatHistoryToString";
+import createLogService from './logs/createLogService';
+import { LOG_TYPES } from '../types/enums';
+import csEmailHandler, { EmailInput } from '../utils/csEmailHandler';
+import vellumSummariseChat from '../services/vellum/vellumSummariseChat';
+import vellumSummariseSubject from '../services/vellum/vellumSummariseSubject';
+import getChatHistory from '../services/logs/getChatHistory';
+import chatHistoryToString from '../utils/chatHistoryToString';
 
 const escalateToHuman = async (
   question: string,
@@ -13,6 +13,15 @@ const escalateToHuman = async (
 ): Promise<string> => {
   let adjustedAiAnswer = aiAnswer;
   adjustedAiAnswer = `Sorry, I can't help with that. I've sent this to our support team, and they'll get back to you soon. <br/>In the meantime, if you have any other questions, feel free to ask!`;
+
+  await createLogService(
+    process.env.LOG_API_URL as string,
+    question,
+    adjustedAiAnswer,
+    sessionId,
+    LOG_TYPES.ESCALATE
+  );
+
   //Get Chat History
   const chatHistory = await getChatHistory(
     process.env.LOG_API_URL as string,
@@ -42,14 +51,6 @@ const escalateToHuman = async (
   } catch (error) {
     return adjustedAiAnswer;
   }
-
-  createLogService(
-    process.env.LOG_API_URL as string,
-    question,
-    aiAnswer,
-    sessionId,
-    LOG_TYPES.NO_RESPONSE
-  );
 
   return adjustedAiAnswer;
 };
