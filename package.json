@@ -2,10 +2,13 @@
   "name": "chatbot-api",
   "version": "1.0.0",
   "description": "A Node.js API that implements RAG with AI services",
-  "main": "dist/index.js",
+  "engines": {
+    "node": "20.x"
+  },
   "type": "commonjs",
   "scripts": {
     "start": "node dist/index.js",
+    "postinstall": "tsc",
     "dev": "ts-node-dev --respawn api/index.ts",
     "build": "tsc",
     "test": "jest"
