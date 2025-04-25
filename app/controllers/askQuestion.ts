@@ -1,7 +1,7 @@
-import { Request, Response, NextFunction } from "express";
-import { getCachedData } from "../redis/helpers";
-import responseHandler from "../services/responseHandler";
-import getAiAnswer from "../services/ai/getAiAnswer";
+import { Request, Response, NextFunction } from 'express';
+import { getCachedData } from '../redis/helpers';
+import responseHandler from '../services/responseHandler';
+import getAiAnswer from '../services/ai/getAiAnswer';
 
 interface AskQuestionRequest extends Request {
   body: {
@@ -42,7 +42,7 @@ const askQuestion = async (
       cacheKey,
       false
     );
-    return res.json({ answer: aiAnswer });
+    return res.json({ answer: adjustedResponse });
   } catch (error) {
     next(error);
   }
