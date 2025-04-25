@@ -1,11 +1,11 @@
 // ===================================================
 // IMPORTS
 // ===================================================
-import express, { Express, Request, Response, NextFunction } from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import chatRouter from "./routes/chat";
-import healthRouter from "./routes/health";
+import express, { Express, Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import chatRouter from './app/routes/chat';
+import healthRouter from './app/routes/health';
 
 dotenv.config();
 const app: Express = express();
@@ -21,15 +21,15 @@ app.use(express.json());
 // ROUTES
 // ===================================================
 
-app.use("/api/chat", chatRouter);
-app.get("/health", healthRouter);
+app.use('/api/chat', chatRouter);
+app.get('/health', healthRouter);
 
 // ===================================================
 // 404 - NOT FOUND
 // ===================================================
 
 app.use((_: Request, res: Response) => {
-  res.status(404).json({ message: "Not Found" });
+  res.status(404).json({ message: 'Not Found' });
 });
 
 // ===================================================
