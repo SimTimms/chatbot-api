@@ -19,7 +19,7 @@ const askQuestion = async (
     const { question, sessionId } = req.body;
 
     //Cached Response
-    const cacheKey = `question-response:${question}`;
+    const cacheKey = `question-response:${question}-${sessionId}`;
     const cachedAnswer = await getCachedData(cacheKey);
     let adjustedResponse: string | undefined = undefined;
     if (cachedAnswer) {

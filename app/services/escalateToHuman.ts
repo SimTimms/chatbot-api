@@ -1,10 +1,6 @@
 import createLogService from './logs/createLogService';
 import { LOG_TYPES } from '../types/enums';
-import csEmailHandler, { EmailInput } from '../utils/csEmailHandler';
-import vellumSummariseChat from '../services/vellum/vellumSummariseChat';
-import vellumSummariseSubject from '../services/vellum/vellumSummariseSubject';
-import getChatHistory from '../services/logs/getChatHistory';
-import chatHistoryToString from '../utils/chatHistoryToString';
+import csEmailHandler from '../utils/csEmailHandler';
 
 const escalateToHuman = async (
   question: string,
@@ -12,7 +8,7 @@ const escalateToHuman = async (
   sessionId: string
 ): Promise<string> => {
   let adjustedAiAnswer = aiAnswer;
-  adjustedAiAnswer = `Sorry, I can't help with that. I've sent this to our support team, and they'll get back to you soon. <br/>In the meantime, if you have any other questions, feel free to ask!`;
+  adjustedAiAnswer = `I've sent this to our support team, and they'll get back to you soon. <br/>In the meantime, if you have any other questions, feel free to ask!`;
 
   await createLogService(
     process.env.LOG_API_URL as string,
@@ -22,31 +18,15 @@ const escalateToHuman = async (
     LOG_TYPES.ESCALATE
   );
 
-  //Get Chat History
-  const chatHistory = await getChatHistory(
-    process.env.LOG_API_URL as string,
-    sessionId
-  );
-  const chatHistoryString = chatHistoryToString(chatHistory);
+  //REQUIRES A CHECK TO SEE IF AN EMAIL HAS ALREADY BEEN SENT - THIS WILL PREVENT THE EMAIL FROM BEING SPAMMED
 
-  //Get AI to summarise the chat history and subject
-  const aiSummarisedHistory = await vellumSummariseChat(chatHistoryString);
-  const aiSummary = aiSummarisedHistory[0].value as string;
-  const aiSummarySubject = await vellumSummariseSubject(aiSummary);
   try {
-    const aiSubjectJSON = JSON.parse(aiSummarySubject[0].value as string);
-    const aiSubject = aiSubjectJSON.subject;
-    const aiTag = aiSubjectJSON.tag;
-    const aiAction = aiSubjectJSON.action;
-
-    const emailConfig: EmailInput = {
-      aiSubject,
-      aiTag,
-      aiAction,
-      aiSummary,
-      chatHistoryString,
+    const emailConfig = {
+      sessionId: sessionId,
+      userEmail: '',
+      cognitoAccountEmail: '',
+      invoiceNumber: '',
     };
-
     setImmediate(() => csEmailHandler(emailConfig));
   } catch (error) {
     return adjustedAiAnswer;

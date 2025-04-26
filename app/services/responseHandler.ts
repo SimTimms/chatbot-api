@@ -19,7 +19,7 @@ const responseHandler = async (
   if (!isCached) {
     await setCachedData(cacheKey, aiAnswer, CACHE_EXPIRATION);
   }
-  console.log('Adjusted AI Answer:', adjustedAiAnswer);
+
   if (
     adjustedAiAnswer.indexOf(LOG_TYPES.ESCALATE) > -1 ||
     adjustedAiAnswer.indexOf(LOG_TYPES.NO_RESPONSE) > -1
@@ -36,7 +36,7 @@ const responseHandler = async (
       isCached ? LOG_TYPES.CHAT_CACHED : LOG_TYPES.CHAT
     );
   }
-  console.log(adjustedAiAnswer);
+
   return adjustedAiAnswer;
 };
 
