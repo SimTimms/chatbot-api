@@ -60,9 +60,9 @@ const csEmailHandler = async ({
     htmlMessage: '',
     message: '',
     recipientEmail: process.env.MAILJET_CUSTOMER_SUPPORT_EMAIL as string,
-    recipientName: 'support@cognitoedu.org',
+    recipientName: 'Technical Support',
     senderEmail: process.env.MAILJET_SENDER_EMAIL as string,
-    senderName: 'chatbot@cognitoedu.org',
+    senderName: 'noreply@cognitoedu.org',
     mailjetKey: process.env.MAILJET_API_KEY as string,
     mailjetSecret: process.env.MAILJET_API_SECRET as string,
   };
