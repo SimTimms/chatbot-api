@@ -1,4 +1,4 @@
-import { gql, ApolloClient, InMemoryCache } from "@apollo/client";
+import { gql, ApolloClient, InMemoryCache } from '@apollo/client';
 
 async function createLogService(
   graphqlURL: string,
@@ -12,7 +12,7 @@ async function createLogService(
       uri: graphqlURL,
       cache: new InMemoryCache(),
     });
-
+    console.log(aiResponse);
     const createLog = gql`
       mutation CreateLog($input: LogInput!) {
         createLog(input: $input) {
@@ -34,9 +34,9 @@ async function createLogService(
 
     const data = results;
 
-    console.log("Log created successfully:", data);
+    console.log('Log created successfully:', data);
   } catch (error) {
-    console.warn("Log writing failed:", error);
+    console.warn('Log writing failed:', error);
     return null;
   }
 }
