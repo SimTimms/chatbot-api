@@ -1,5 +1,5 @@
-import vellumClient from "./vellumClient";
-import { Vellum } from "vellum-ai";
+import vellumClient from './vellumClient';
+import { Vellum } from 'vellum-ai';
 
 async function vellumChatResponse(question: string): Promise<any[]> {
   const vellumClientInstance = await vellumClient(
@@ -7,12 +7,12 @@ async function vellumChatResponse(question: string): Promise<any[]> {
   );
 
   // configurable parameters
-  const workflowDeploymentName = "chatbot-workflow";
-  const releaseTag = "LATEST";
+  const workflowDeploymentName = 'chatbot-workflow';
+  const releaseTag = 'LATEST';
   const inputs: Vellum.WorkflowRequestInputRequest[] = [
     {
-      type: "STRING",
-      name: "question",
+      type: 'STRING',
+      name: 'question',
       value: question,
     },
   ];
@@ -27,8 +27,8 @@ async function vellumChatResponse(question: string): Promise<any[]> {
   // execute the workflow
   const result = await vellumClientInstance.executeWorkflow(request);
 
-  if (result.data.state === "REJECTED") {
-    console.warn("Vellum rejected this workflow");
+  if (result.data.state === 'REJECTED') {
+    console.warn('Vellum rejected this workflow', result.data);
     return [];
   }
 
