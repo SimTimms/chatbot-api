@@ -35,6 +35,7 @@ const askQuestion = async (
 
     //Uncached Response
     const aiAnswer: string = await getAiAnswer(question);
+    console.log(aiAnswer);
     adjustedResponse = await responseHandler(
       question,
       aiAnswer,
