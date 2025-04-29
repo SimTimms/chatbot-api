@@ -56,7 +56,7 @@ const csEmailHandler = async ({
 
   // Create the email object
   const csEmail: MailjetSendEmail = {
-    subject: `[SUPPORT ESCALATION] - ${aiTag} - ${aiSubject} - from {User Email}`,
+    subject: `[SUPPORT ESCALATION] - ${aiTag} - ${aiSubject} - from ${userEmail}`,
     htmlMessage: '',
     message: '',
     recipientEmail: process.env.MAILJET_CUSTOMER_SUPPORT_EMAIL as string,

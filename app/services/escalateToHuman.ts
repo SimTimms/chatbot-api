@@ -5,10 +5,10 @@ import csEmailHandler from '../utils/csEmailHandler';
 const escalateToHuman = async (
   question: string,
   aiAnswer: string,
-  sessionId: string
+  sessionId: string,
+  emailAddress?: string
 ): Promise<string> => {
   let adjustedAiAnswer = aiAnswer;
-  adjustedAiAnswer = `I've sent this to our support team, and they'll get back to you soon. <br/>In the meantime, if you have any other questions, feel free to ask!`;
 
   await createLogService(
     process.env.LOG_API_URL as string,
@@ -17,20 +17,25 @@ const escalateToHuman = async (
     sessionId,
     LOG_TYPES.ESCALATE
   );
-
+  console.log('Escalate to Human: ', emailAddress);
   //REQUIRES A CHECK TO SEE IF AN EMAIL HAS ALREADY BEEN SENT - THIS WILL PREVENT THE EMAIL FROM BEING SPAMMED
-
-  try {
-    const emailConfig = {
-      sessionId: sessionId,
-      userEmail: '',
-      cognitoAccountEmail: '',
-      invoiceNumber: '',
-    };
-    setImmediate(() => csEmailHandler(emailConfig));
-  } catch (error) {
-    return adjustedAiAnswer;
+  if (emailAddress) {
+    console.log('Email Address Captured: ', emailAddress);
+    try {
+      const emailConfig = {
+        sessionId: sessionId,
+        userEmail: emailAddress,
+        cognitoAccountEmail: '',
+        invoiceNumber: '',
+      };
+      setImmediate(() => csEmailHandler(emailConfig));
+    } catch (error) {
+      return adjustedAiAnswer;
+    }
+    adjustedAiAnswer =
+      'Thank you, we have sent your request and you will hear back soon. ';
   }
+  console.log('Email Address NOT Captured: ', emailAddress);
 
   return adjustedAiAnswer;
 };

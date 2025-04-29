@@ -3,6 +3,7 @@ import { LOG_TYPES } from '../types/enums';
 import { setCachedData } from '../redis/helpers';
 import escalateToHuman from './escalateToHuman';
 import handleRefund from './handleRefund';
+import e from 'cors';
 
 const CACHE_EXPIRATION = 3600;
 
@@ -11,7 +12,8 @@ const responseHandler = async (
   aiAnswer: string,
   sessionId: string,
   cacheKey: string,
-  isCached: boolean
+  isCached: boolean,
+  emailAddress?: string
 ): Promise<string> => {
   let adjustedAiAnswer = aiAnswer;
 
@@ -19,12 +21,19 @@ const responseHandler = async (
   if (!isCached) {
     await setCachedData(cacheKey, aiAnswer, CACHE_EXPIRATION);
   }
-
+  console.log('Response Handler: ', emailAddress);
   if (
     adjustedAiAnswer.indexOf(LOG_TYPES.ESCALATE) > -1 ||
-    adjustedAiAnswer.indexOf(LOG_TYPES.NO_RESPONSE) > -1
+    adjustedAiAnswer.indexOf(LOG_TYPES.NO_RESPONSE) > -1 ||
+    emailAddress !== undefined ||
+    emailAddress !== ''
   ) {
-    adjustedAiAnswer = await escalateToHuman(question, aiAnswer, sessionId);
+    adjustedAiAnswer = await escalateToHuman(
+      question,
+      aiAnswer,
+      sessionId,
+      emailAddress
+    );
   } else if (adjustedAiAnswer.indexOf(LOG_TYPES.REFUND) > -1) {
     adjustedAiAnswer = await handleRefund(question, aiAnswer, sessionId);
   } else {

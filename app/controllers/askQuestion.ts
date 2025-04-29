@@ -7,6 +7,7 @@ interface AskQuestionRequest extends Request {
   body: {
     question: string;
     sessionId: string;
+    emailAddress: string;
   };
 }
 
@@ -16,8 +17,8 @@ const askQuestion = async (
   next: NextFunction
 ) => {
   try {
-    const { question, sessionId } = req.body;
-
+    const { question, sessionId, emailAddress } = req.body;
+    console.log(emailAddress);
     //Cached Response
     const cacheKey = `question-response:${question}-${sessionId}`;
     const cachedAnswer = await getCachedData(cacheKey);
@@ -28,20 +29,21 @@ const askQuestion = async (
         cachedAnswer,
         sessionId,
         cacheKey,
-        true
+        true,
+        emailAddress
       );
       return res.json({ answer: adjustedResponse });
     }
 
     //Uncached Response
     const aiAnswer: string = await getAiAnswer(question);
-    console.log(aiAnswer);
     adjustedResponse = await responseHandler(
       question,
       aiAnswer,
       sessionId,
       cacheKey,
-      false
+      false,
+      emailAddress
     );
     return res.json({ answer: adjustedResponse });
   } catch (error) {
